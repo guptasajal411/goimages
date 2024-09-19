@@ -4,12 +4,14 @@ import { RegisterAction } from "@/actions/authActions";
 import SubmitButton from "@/components/SubmitButton";
 import { useAppDispatch } from "@/store/hooks";
 import { setUser } from "@/store/slices/userSlice";
+import { useRouter } from "next/navigation";
 import { useActionState, useEffect } from "react"
 import toast from "react-hot-toast";
 
 let initialState = { isError: false, message: "" }
 
 export default function RegisterForm() {
+    const router = useRouter();
     const dispatch = useAppDispatch();
     const [state, formAction] = useActionState(RegisterAction, initialState);
     useEffect(() => {

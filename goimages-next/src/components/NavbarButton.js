@@ -22,6 +22,9 @@ export default function NavbarButton() {
     return <>
         {userData.authenticated ? <form action={formAction}>
             <button type="submit">Logout</button>
-        </form> : <Link href="/login">Login</Link>}
+        </form> : <div className="flex flex-row">
+            <Link href="/login" className="pe-3">Login</Link>
+            <Link href="/register">Register</Link>
+        </div>}
     </>
 }
