@@ -2,16 +2,20 @@
 
 import { RegisterAction } from "@/actions/authActions";
 import SubmitButton from "@/components/SubmitButton";
+import { useAppDispatch } from "@/store/hooks";
+import { setUser } from "@/store/slices/userSlice";
 import { useActionState, useEffect } from "react"
 import toast from "react-hot-toast";
 
 let initialState = { isError: false, message: "" }
 
 export default function RegisterForm() {
+    const dispatch = useAppDispatch();
     const [state, formAction] = useActionState(RegisterAction, initialState);
     useEffect(() => {
         if (state.actionResponse) {
             state.isError ? toast.error(state.message) : toast.success(state.message);
+            state.data && dispatch(setUser(state.data));
             state.redirect && router.replace(state.redirect);
         }
     }, [state])
@@ -26,6 +30,5 @@ export default function RegisterForm() {
             <input name="password" placeholder="password" required type="password" />
         </div>
         <SubmitButton content={"Register"} />
-        <p>{JSON.stringify(state)}</p>
     </form>
 }

@@ -20,7 +20,8 @@ export async function RegisterAction(prevState, formData) {
         const user = await User.create({ name, email, password });
         const token = await user.generateToken();
         cookies().set(process.env.AUTH_COOKIE_NAME, token, { maxAge: 48 * 60 * 60, httpOnly: true });
-        return { isError: false, message: "User registered", actionResponse: true, redirect: "/dashboard" }
+        revalidatePath("/");
+        return { isError: false, message: "User registered", actionResponse: true, redirect: "/", data: { email: user.email, name: user.name } }
     } catch (e) {
         console.log(e.message);
         return { isError: true, message: "An error occoured", actionResponse: true }
@@ -44,7 +45,8 @@ export async function LoginAction(prevState, formData) {
         }
         const token = await foundUser.generateToken();
         cookies().set(process.env.AUTH_COOKIE_NAME, token, { maxAge: 48 * 60 * 60, httpOnly: true });
-        return { isError: false, message: "Logged in successfully", actionResponse: true, redirect: "/dashboard" }
+        revalidatePath("/");
+        return { isError: false, message: "Logged in successfully", actionResponse: true, redirect: "/", data: { email: foundUser.email, name: foundUser.name } }
     } catch (e) {
         console.log(e.message);
         return { isError: true, message: "An error occoured", actionResponse: true }

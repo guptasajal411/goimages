@@ -11,7 +11,8 @@ export default async function middleware(request) {
     try {
         const secret = new TextEncoder().encode(process.env.JWT_SECRET);
         const { payload } = await jose.jwtVerify(cookie.value, secret, {});
-        if (shouldntBeAccessibleIfLoggedIn.includes(path)) return NextResponse.redirect(new URL("/dashboard", request.url))
+        console.log("cookie verified middleware")
+        if (shouldntBeAccessibleIfLoggedIn.includes(path)) return NextResponse.redirect(new URL("/", request.url))
     } catch (e) {
         if (shouldntBeAccessibleIfLoggedIn.includes(path)) return NextResponse.next();
         return NextResponse.redirect(new URL("/login", request.url))
@@ -19,5 +20,5 @@ export default async function middleware(request) {
 }
 
 export const config = {
-    matcher: ["/login", "/register"]
+    matcher: ["/login", "/register", '/']
 }
