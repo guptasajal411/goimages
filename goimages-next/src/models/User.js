@@ -1,7 +1,7 @@
 // models/User.js
 import mongoose from 'mongoose';
-import { sign } from 'jsonwebtoken';
 import { hash, compare } from 'bcryptjs';
+import * as jose from "jose";
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -38,10 +38,14 @@ userSchema.pre('save', async function (next) {
     next();
 });
 
-userSchema.methods.generateToken = function () {
-    const token = sign({ id: this._id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN,
-    });
+userSchema.methods.generateToken = async function () {
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    const alg = "HS256";
+    const token = await new jose.SignJWT({ _id: this._id, email: this.email })
+        .setProtectedHeader({ alg })
+        .setExpirationTime("72h")
+        .setSubject(process.env.AUTH_COOKIE_NAME)
+        .sign(secret);
     return token;
 };
 
@@ -49,6 +53,4 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
     return await compare(candidatePassword, this.password);
 };
 
-const User = mongoose.model('User', userSchema);
-
-export default User;
+export default mongoose?.models?.User || mongoose.model('User', userSchema);
