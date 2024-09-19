@@ -1,8 +1,7 @@
 import "server-only"
-import Home from "./home";
+import Home from "../components/homepage/home";
 import { cookies } from "next/headers";
-import Dashboard from "./dashboard";
-import ReduxExample from "@/components/home/ReduxExample";
+import Dashboard from "../components/homepage/dashboard";
 import User from "@/models/User";
 import dbConn from "@/config/dbConn";
 import * as jose from "jose"
@@ -27,9 +26,7 @@ export default async function Page() {
     }
     return (
         <div>
-            <p>hello</p>
             {authenticated ? <Dashboard userData={{ email: user.email, name: user.name }} /> : <Home />}
-            <ReduxExample />
         </div>
     );
 }
