@@ -2,7 +2,9 @@
 
 import dbConn from "@/config/dbConn";
 import User from "@/models/User";
+import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export async function RegisterAction(prevState, formData) {
     await dbConn();
@@ -18,7 +20,7 @@ export async function RegisterAction(prevState, formData) {
         const user = await User.create({ name, email, password });
         const token = await user.generateToken();
         cookies().set(process.env.AUTH_COOKIE_NAME, token, { maxAge: 48 * 60 * 60, httpOnly: true });
-        return { isError: false, message: "User registered", actionResponse: true }
+        return { isError: false, message: "User registered", actionResponse: true, redirect: "/dashboard" }
     } catch (e) {
         console.log(e.message);
         return { isError: true, message: "An error occoured", actionResponse: true }
@@ -42,9 +44,15 @@ export async function LoginAction(prevState, formData) {
         }
         const token = await foundUser.generateToken();
         cookies().set(process.env.AUTH_COOKIE_NAME, token, { maxAge: 48 * 60 * 60, httpOnly: true });
-        return { isError: false, message: "Logged in successfully", actionResponse: true }
+        return { isError: false, message: "Logged in successfully", actionResponse: true, redirect: "/dashboard" }
     } catch (e) {
         console.log(e.message);
         return { isError: true, message: "An error occoured", actionResponse: true }
     }
+}
+
+export async function LogoutAction() {
+    cookies().delete(process.env.AUTH_COOKIE_NAME);
+    revalidatePath("/");
+    redirect("/");
 }
