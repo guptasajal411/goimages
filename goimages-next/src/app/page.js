@@ -11,7 +11,7 @@ export default async function Page() {
     let authenticated = false;
     let user;
     const cookie = cookies().get(process.env.AUTH_COOKIE_NAME);
-    if (cookie) {
+    if (cookie?.value) {
         try {
             const secret = new TextEncoder().encode(process.env.JWT_SECRET);
             const { payload } = await jose.jwtVerify(cookie.value, secret, {});

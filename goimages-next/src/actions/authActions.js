@@ -2,9 +2,7 @@
 
 import dbConn from "@/config/dbConn";
 import User from "@/models/User";
-import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 export async function RegisterAction(prevState, formData) {
     await dbConn();
@@ -20,7 +18,6 @@ export async function RegisterAction(prevState, formData) {
         const user = await User.create({ name, email, password });
         const token = await user.generateToken();
         cookies().set(process.env.AUTH_COOKIE_NAME, token, { maxAge: 48 * 60 * 60, httpOnly: true });
-        revalidatePath("/");
         return { isError: false, message: "User registered", actionResponse: true, redirect: "/", data: { email: user.email, name: user.name } }
     } catch (e) {
         console.log(e.message);
@@ -45,7 +42,6 @@ export async function LoginAction(prevState, formData) {
         }
         const token = await foundUser.generateToken();
         cookies().set(process.env.AUTH_COOKIE_NAME, token, { maxAge: 48 * 60 * 60, httpOnly: true });
-        revalidatePath("/");
         return { isError: false, message: "Logged in successfully", actionResponse: true, redirect: "/", data: { email: foundUser.email, name: foundUser.name } }
     } catch (e) {
         console.log(e.message);
@@ -55,6 +51,5 @@ export async function LoginAction(prevState, formData) {
 
 export async function LogoutAction() {
     cookies().delete(process.env.AUTH_COOKIE_NAME);
-    revalidatePath("/");
-    redirect("/");
+    return { isError: false, message: "Logged out sucessfully", actionResponse: true, redirect: "/" }
 }
