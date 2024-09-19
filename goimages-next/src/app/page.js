@@ -14,9 +14,7 @@ export default async function Page() {
     if (cookie) {
         try {
             const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-            console.log(cookie)
             const { payload } = await jose.jwtVerify(cookie.value, secret, {});
-            console.log(payload)
             await dbConn();
             const foundUser = await User.findOne({ email: payload.email }).exec();
             if (foundUser) authenticated = true; user = foundUser.toObject();
