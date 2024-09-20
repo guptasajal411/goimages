@@ -13,7 +13,7 @@ export default function UploadFiles() {
         e.preventDefault();
         const formData = new FormData();
         Array.from(selectedFiles).forEach(x => formData.append("files", x));
-        const _response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/upload`, {
+        const _response = await fetch(`/api/upload`, {
             method: "POST", body: formData, credentials: "include"
         });
     }
