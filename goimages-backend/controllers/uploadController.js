@@ -1,15 +1,13 @@
-import redis from "../config/redisConn.js"
 import Photo from "../models/Photo.js"
-
+import photoQueue from '../queues/photoQueue.js'
 export const uploadFiles = async (req, res) => {
     for (const file of req.files) {
         const photo = new Photo({
             user: req.user._id,
             originalname: file.originalname, encoding: file.encoding, mimetype: file.mimetype, size: file.size
         });
-        console.log(photo?._id)
         try {
-            await redis.set(`photo:${req.user._id}:${photo._id}`, file.buffer);
+            await photoQueue.add(`photo:${req.user._id}:${photo._id}`, file)
             await photo.save();
         } catch (e) {
             console.log(e);
