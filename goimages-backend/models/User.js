@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import { hash, compare } from 'bcryptjs';
-import * as jose from "jose";
+// import { hash, compare } from 'bcryptjs';
+// import * as jose from "jose";
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -31,25 +31,25 @@ const userSchema = new mongoose.Schema({
     timestamps: true,
 });
 
-userSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) return next();
-    this.password = await hash(this.password, 12);
-    next();
-});
+// userSchema.pre('save', async function (next) {
+//     if (!this.isModified('password')) return next();
+//     this.password = await hash(this.password, 12);
+//     next();
+// });
 
-userSchema.methods.generateToken = async function () {
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-    const alg = "HS256";
-    const token = await new jose.SignJWT({ _id: this._id, email: this.email })
-        .setProtectedHeader({ alg })
-        .setExpirationTime("72h")
-        .setSubject(process.env.AUTH_COOKIE_NAME)
-        .sign(secret);
-    return token;
-};
+// userSchema.methods.generateToken = async function () {
+//     const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+//     const alg = "HS256";
+//     const token = await new jose.SignJWT({ _id: this._id, email: this.email })
+//         .setProtectedHeader({ alg })
+//         .setExpirationTime("72h")
+//         .setSubject(process.env.AUTH_COOKIE_NAME)
+//         .sign(secret);
+//     return token;
+// };
 
-userSchema.methods.comparePassword = async function (candidatePassword) {
-    return await compare(candidatePassword, this.password);
-};
+// userSchema.methods.comparePassword = async function (candidatePassword) {
+//     return await compare(candidatePassword, this.password);
+// };
 
 export default mongoose?.models?.User || mongoose.model('User', userSchema);

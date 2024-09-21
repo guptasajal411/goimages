@@ -5,6 +5,8 @@ import cors from "cors"
 import uploadRouter from "./routes/uploadRoutes.js"
 import morgan from "morgan";
 import chalk from "chalk";
+import redis from "./config/redisConn.js";
+import cookieParser from "cookie-parser";
 
 const mongooseOptions = {
     maxPoolSize: 10,
@@ -26,6 +28,8 @@ mongoose.connection.on("error", (err) => {
     console.log(err);
 });
 
+redis.hello();
+
 const app = express();
 const corsOptions = {
     origin: [ORIGIN1, ORIGIN2],
@@ -33,6 +37,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(cookieParser());
 app.use(morgan(function (tokens, req, res) {
     if (tokens.method(req, res) !== "OPTIONS") {
         return [
