@@ -7,27 +7,9 @@ import morgan from "morgan";
 import chalk from "chalk";
 import redis from "./config/redisConn.js";
 import cookieParser from "cookie-parser";
+import dbConn from "./config/dbConn.js";
 
-const mongooseOptions = {
-    maxPoolSize: 10,
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000,
-    family: 4
-};
-
-mongoose.connect(MONGO_URI, mongooseOptions).then(
-    () => {
-        console.log("connected to mongodb");
-    },
-    (err) => {
-        console.log("Error connecting to MongoDB: ", err);
-    }
-);
-
-mongoose.connection.on("error", (err) => {
-    console.log(err);
-});
-
+dbConn();
 redis.hello();
 
 const app = express();

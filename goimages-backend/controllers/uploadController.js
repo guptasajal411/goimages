@@ -1,5 +1,6 @@
 import Photo from "../models/Photo.js"
 import photoQueue from '../queues/photoQueue.js'
+
 export const uploadFiles = async (req, res) => {
     for (const file of req.files) {
         const photo = new Photo({
@@ -7,7 +8,7 @@ export const uploadFiles = async (req, res) => {
             originalname: file.originalname, encoding: file.encoding, mimetype: file.mimetype, size: file.size
         });
         try {
-            await photoQueue.add(`photo:${req.user._id}:${photo._id}`, file)
+            const queueResponse = await photoQueue.add(`photo:${req.user._id}:${photo._id}`, file);
             await photo.save();
         } catch (e) {
             console.log(e);
