@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
             >
                 <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
                 <StoreProvider>
-                    <nav className="w-[100vw] h-[90px] bg-red-500 flex flex-row px-4 justify-between items-center">
+                    <nav className="w-[100%] h-[90px] bg-red-500 flex flex-row px-4 justify-between items-center">
                         <Link href="/" className="text-2xl">GoImages</Link>
                         <div className="text-base"><NavbarButton /></div>
                     </nav>

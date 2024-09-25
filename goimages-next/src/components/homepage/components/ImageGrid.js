@@ -31,6 +31,10 @@ export default async function ImageGrid() {
         return <p className="text">An error occoured</p>
     }
     return <div className="w-[100%] pt-4 flex flex-wrap gap-4">
-        {renderPhotos.length > 0 ? renderPhotos.map(x => <Image src={x?.src} key={x?._id} width={300} height={300} />) : <p className="text">No images found</p>}
+        {renderPhotos.length > 0
+            ? renderPhotos.map(x => <div className="h-[200px] rounded">
+                <Image src={x?.src} key={x?._id} blurDataURL="/favicon.png" className="rounded h-[100%] w-auto object-cover" width={200} height={200} />
+            </div>)
+            : <p className="text">No images found</p>}
     </div>
 }
