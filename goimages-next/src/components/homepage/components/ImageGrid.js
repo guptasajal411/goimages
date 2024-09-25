@@ -1,9 +1,10 @@
-import { cookies } from "next/headers"
 import "server-only"
+import { cookies } from "next/headers"
 import * as jose from "jose"
 import Photo from "@/models/Photo";
 import AWS from "aws-sdk";
 import Image from "next/image";
+import ThumbnailImage from "./ThumbnailImage";
 
 const s3 = new AWS.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -32,8 +33,8 @@ export default async function ImageGrid() {
     }
     return <div className="w-[100%] pt-4 flex flex-wrap gap-4">
         {renderPhotos.length > 0
-            ? renderPhotos.map(x => <div className="h-[200px] rounded">
-                <Image src={x?.src} key={x?._id} blurDataURL="/favicon.png" className="rounded h-[100%] w-auto object-cover" width={200} height={200} />
+            ? renderPhotos.map(x => <div className="h-[200px] rounded bg-gray-300">
+                <ThumbnailImage src={x?.src} key={x?._id} />
             </div>)
             : <p className="text">No images found</p>}
     </div>
