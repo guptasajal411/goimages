@@ -1,7 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     experimental: {
-        ppr: "incremental"
+        ppr: true
+    },
+    images: {
+        remotePatterns: [{
+            protocol: "https",
+            hostname: "goimages.s3.ap-south-1.amazonaws.com",
+            port: ""
+        }]
     }
 };
 
