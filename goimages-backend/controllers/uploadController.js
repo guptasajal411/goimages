@@ -1,5 +1,5 @@
+import sharp from "sharp";
 import Photo from "../models/Photo.js"
-import photoQueue from '../queues/photoQueue.js'
 import bufferToS3 from "../utils/bufferToS3.js";
 
 export const uploadFiles = async (req, res) => {
@@ -14,7 +14,9 @@ export const uploadFiles = async (req, res) => {
             // const queueResponse = await photoQueue.add(`photo:${req.user._id}:${photo._id}`, file);
             const s3Response = await bufferToS3(file.buffer, req.user._id, photo?._id, fileFormat);
             if (s3Response.success) {
+                const { height, width } = await sharp(file.buffer).metadata();
                 photo.s3ObjectKey = s3Response?.s3ObjectKey;
+                photo.height = height; photo.width = width;
                 await photo.save();
             } else {
                 throw new Error("An error occoured")

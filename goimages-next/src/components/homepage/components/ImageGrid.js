@@ -18,14 +18,14 @@ export default async function ImageGrid() {
     try {
         const secret = new TextEncoder().encode(process.env.JWT_SECRET);
         const { payload } = await jose.jwtVerify(cookie.value, secret, {});
-        const photos = await Photo.find({ user: payload?._id }).sort("-createdAt").select("s3ObjectKey").exec()
+        const photos = await Photo.find({ user: payload?._id }).sort("-createdAt").select("s3ObjectKey width height").exec()
         for (const photo of photos) {
             const signedUrl = s3.getSignedUrl("getObject", {
                 Bucket: process.env.S3_BUCKET_NAME,
                 Key: photo?.s3ObjectKey,
                 Expires: 60 * 60
             });
-            renderPhotos.push({ src: signedUrl, _id: photo?._id })
+            renderPhotos.push({ src: signedUrl, _id: photo?._id, height: photo?.height, width: photo?.width })
         }
     } catch (e) {
         console.log(e);
@@ -33,9 +33,7 @@ export default async function ImageGrid() {
     }
     return <div className="w-[100%] pt-4 flex flex-wrap gap-4">
         {renderPhotos.length > 0
-            ? renderPhotos.map(x => <div className="h-[200px] rounded bg-gray-300">
-                <ThumbnailImage src={x?.src} key={x?._id} />
-            </div>)
+            ? renderPhotos.map(x => <ThumbnailImage src={x?.src} key={x?._id} width={x?.width} height={x?.height} />)
             : <p className="text">No images found</p>}
     </div>
 }
