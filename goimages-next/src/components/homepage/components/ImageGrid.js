@@ -18,7 +18,7 @@ export default async function ImageGrid() {
     try {
         const secret = new TextEncoder().encode(process.env.JWT_SECRET);
         const { payload } = await jose.jwtVerify(cookie.value, secret, {});
-        const photos = await Photo.find({ user: payload?._id }).sort("-createdAt").select("s3ObjectKey width height").exec()
+        const photos = await Photo.find({ user: payload?._id }).sort("-createTime").select("s3ObjectKey width height").exec()
         for (const photo of photos) {
             const signedUrl = s3.getSignedUrl("getObject", {
                 Bucket: process.env.S3_BUCKET_NAME,

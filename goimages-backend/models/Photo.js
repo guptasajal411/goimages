@@ -13,7 +13,8 @@ const photoSchema = new mongoose.Schema({
     size: Number,
     s3ObjectKey: String,
     height: Number,
-    width: Number
+    width: Number,
+    createTime: { type: Date, default: Date.now }
 }, {
     timestamps: true,
 });
