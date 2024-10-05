@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    :root {
+        --color-primary: hsl(0, 0%, 100%);
+        --color-secondary: hsl(0, 0%, 70%);
+        --color-bg-primary: #0d121c;
+        --color-green: #99cc7d;
+    }
+}
+
+.blurredBg::after {
+    position: absolute;
+    content: "";
+    width: 200px;
+    aspect-ratio: 1/1;
+    background-color: var(--color-green);
+    border-radius: 50%;
+    filter: blur(120px);
+    transform: translateX(50px);
+}
