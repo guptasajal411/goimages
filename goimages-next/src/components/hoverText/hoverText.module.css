@@ -1,0 +1,15 @@
+.hoverText::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: var(--color-green);
+    transition: all 0.2s ease-in-out;
+    opacity: 0;
+    bottom: -5px;
+}
+
+.hoverText:hover::before {
+    bottom: -3px;
+    opacity: 1;
+}

@@ -6,6 +6,7 @@ import { logoutUser } from "@/store/slices/userSlice";
 import Link from "next/link";
 import { useActionState, useEffect } from "react";
 import toast from "react-hot-toast";
+import HoverText from "./hoverText/HoverText";
 
 const initialState = { isError: false, message: null }
 
@@ -23,8 +24,8 @@ export default function NavbarButton() {
         {userData.authenticated ? <form action={formAction}>
             <button type="submit">Logout</button>
         </form> : <div className="flex flex-row">
-            <Link href="/login" className="pe-3 text-secondary">Login</Link>
-            <Link href="/register" className="text-secondary sm:block hidden">Register</Link>
+            <Link href="/login" className="pe-3 text-secondary"><HoverText text={"Login"} /></Link>
+            <Link href="/register" className="text-secondary sm:block hidden"><HoverText text={"Register"} /></Link>
         </div>}
     </>
 }
