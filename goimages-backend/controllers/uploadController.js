@@ -15,6 +15,7 @@ export const uploadFiles = async (req, res) => {
             // const queueResponse = await photoQueue.add(`photo:${req.user._id}:${photo._id}`, file);
             const s3Response = await bufferToS3(file.buffer, req.user._id, photo?._id, fileFormat);
             if (s3Response.success) {
+                await photo.save();
                 const metadata = parser.create(file.buffer);
                 const parsedMetadata = metadata.parse();
                 if (parsedMetadata?.tags?.["DateTimeOriginal"] || parsedMetadata?.tags?.["CreateDate"]) {
@@ -29,8 +30,8 @@ export const uploadFiles = async (req, res) => {
             }
         } catch (e) {
             console.log(e);
-            res.status(500).json({ success: false, message: "An error occoured" })
+            return res.status(500).json({ success: false, message: "An error occoured" })
         }
     }
-    res.status(200).json({ success: true, message: "Images backed up to the cloud" })
+    return res.status(200).json({ success: true, message: "Images backed up to the cloud" })
 }
