@@ -27,8 +27,13 @@ export default function UploadFiles() {
         return 0;
     }
 
-    return <form onSubmit={async e => await handleUpload(e)}>
-        <input type="file" multiple accept="image/*" onChange={e => handleFileChange(e)} />
-        <button type="submit" className="border-2 border-black px-2" disabled={isUploading}>{isUploading ? "Uploading..." : "Upload"}</button>
+    return <form onSubmit={async e => await handleUpload(e)} className="flex">
+        <div className="w-fit flex justify-center items-center me-2">
+            <label htmlFor="imageUploadInput" className="text-primary px-3 py-2 border border-lime-400 border-dashed cursor-pointer">
+                <p className="m-0 text-primary text-base">{selectedFiles.length > 0 ? <>{selectedFiles.length} file{selectedFiles.length > 1 && <>s</>} selected</> : <>Upload Files</>}</p>
+            </label>
+            <input id="imageUploadInput" type="file" hidden multiple accept="image/*" onChange={e => handleFileChange(e)} />
+        </div>
+        {selectedFiles.length > 0 && <button type="submit" className="border-2 border-black px-2 py-2 text-primary border-primary" disabled={isUploading}>{isUploading ? "Uploading..." : "Upload"}</button>}
     </form>
 }
