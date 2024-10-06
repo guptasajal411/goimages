@@ -21,11 +21,11 @@ export default function NavbarButton() {
         }
     }, [state])
     return <>
-        {userData.authenticated ? <form action={formAction}>
-            <button type="submit">Logout</button>
-        </form> : <div className="flex flex-row">
+        {userData.authenticated !== null && (userData.authenticated ? <form action={formAction} className="animate-fade-in">
+            <button type="submit" className="text-secondary">Logout</button>
+        </form> : <div className="flex flex-row animate-fade-in">
             <Link href="/login" className="pe-3 text-secondary" aria-label="Login"><HoverText text={"Login"} /></Link>
             <Link href="/register" className="text-secondary sm:block hidden" aria-label="Register"><HoverText text={"Register"} /></Link>
-        </div>}
+        </div>)}
     </>
 }
