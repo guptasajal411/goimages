@@ -12,8 +12,8 @@ export default async function Home() {
             <div className="flex flex-col sm:items-start justify-center items-center basis-1/2 max-w-[600px]">
                 <h1 className={`${libreBaskerville.className} block text-3xl text-primary text-center sm:text-start`}>Your Self-Hosted Photo Library</h1>
                 <div className="max-w-[75%] flex flex-col">
-                    <p className="text-lg text-secondary text-center sm:text-start">Free, open-source, and private photo storage, powered by your own S3 bucket</p>
-                    <div className="min-w-full flex">
+                    <p className="text-lg text-secondary text-center sm:text-start sm:mt-0 mt-8">Free, open-source, and private photo storage, powered by your own S3 bucket</p>
+                    <div className="min-w-full flex sm:mt-4 mt-10">
                         <Link className="min-w-full bg-lime-400 bg-opacity-10 hover:bg-opacity-15 transition-all ease-in-out duration-200 text-center text-primary mt-3 py-2 px-2 rounded-md border-lime-500/100 border flex justify-center items-center gap-2" href="/register" aria-label="Get Started">
                             <>Get started</>
                             <Image className="opacity-70" src="/open.svg" width="16" height="16" alt="Get Started" />
