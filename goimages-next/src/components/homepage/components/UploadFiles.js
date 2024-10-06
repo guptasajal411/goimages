@@ -29,7 +29,7 @@ export default function UploadFiles() {
     }
 
     return <form onSubmit={async e => await handleUpload(e)} className="flex">
-        <div className="w-fit flex justify-center items-center me-2">
+        <div className={`w-fit flex justify-center items-center ${selectedFiles.length > 0 && "me-2"}`}>
             <label htmlFor="imageUploadInput" className="text-primary px-3 py-2 border border-lime-400 border-dashed cursor-pointer">
                 <p className="m-0 text-primary text-base">{selectedFiles.length > 0 ? <>{selectedFiles.length} file{selectedFiles.length > 1 && <>s</>} selected</> : <>Upload Files</>}</p>
             </label>

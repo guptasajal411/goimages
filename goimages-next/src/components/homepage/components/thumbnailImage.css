@@ -1,0 +1,11 @@
+.favouriteIcon {
+    opacity: 0;
+    top: 0;
+    right: 10px;
+    transition: all 0.2s ease-in-out
+}
+
+.thumbnailContainer:hover .favouriteIcon {
+    top: 10px;
+    opacity: 1;
+}

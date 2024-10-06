@@ -14,6 +14,7 @@ const photoSchema = new mongoose.Schema({
     s3ObjectKey: String,
     height: Number,
     width: Number,
+    favourite: { type: Boolean, default: false },
     createTime: { type: Date, default: Date.now }
 }, {
     timestamps: true,

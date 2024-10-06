@@ -31,9 +31,9 @@ export default async function ImageGrid() {
         console.log(e);
         return <p className="text">An error occoured</p>
     }
-    return <div className="w-[100%] pt-4 flex flex-wrap gap-4">
+    return <div className="w-[100%] max-w-[1536px] mx-auto pt-4 flex flex-wrap gap-4">
         {renderPhotos.length > 0
             ? renderPhotos.map(x => <ThumbnailImage src={x?.src} key={x?._id} width={x?.width} height={x?.height} />)
-            : <p className="text">No images found</p>}
+            : <p className="text-tirtiary mx-auto text-center mt-32 animate-fade-in">Start by uploading your photos</p>}
     </div>
 }
