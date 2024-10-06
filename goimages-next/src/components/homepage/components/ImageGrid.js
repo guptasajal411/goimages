@@ -33,6 +33,6 @@ export default async function ImageGrid() {
     return <div className="w-[100%] max-w-[1536px] mx-auto pt-4 flex flex-wrap gap-4">
         {renderPhotos.length > 0
             ? renderPhotos.map(x => <ThumbnailImage src={x?.src} key={x?._id} width={x?.width} height={x?.height} id={x?.id} favourite={x?.favourite} />)
-            : <p className="text-tirtiary mx-auto text-center mt-32 animate-fade-in">Start by uploading your photos</p>}
+            : <p className="text-tirtiary mx-auto text-center mt-20 animate-fade-in">Start by uploading your photos</p>}
     </div>
 }
