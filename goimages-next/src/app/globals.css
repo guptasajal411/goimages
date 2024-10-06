@@ -6,8 +6,10 @@
     :root {
         --color-primary: hsl(0, 0%, 100%);
         --color-secondary: hsl(0, 0%, 70%);
+        --color-tirtiary: hsl(0, 0%, 40%);
         --color-bg-primary: #0d121c;
         --color-green: #99cc7d;
+        --color-transparent: #00000000;
     }
 }
 
@@ -20,4 +22,13 @@
     border-radius: 50%;
     filter: blur(120px);
     transform: translateX(50px);
+}
+
+input:focus {
+    outline: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    box-shadow: none;
+    border-bottom: 1px solid var(--color-green);
 }

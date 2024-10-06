@@ -10,7 +10,9 @@ module.exports = {
             colors: {
                 background: "var(--color-bg-primary)",
                 primary: "var(--color-primary)",
-                secondary: "var(--color-secondary)"
+                secondary: "var(--color-secondary)",
+                tirtiary: "var(--color-tirtiary)",
+                transparent: "var(--color-transparent)"
             },
             keyframes: {
                 'fade-in-down': {

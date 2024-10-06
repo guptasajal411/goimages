@@ -2,7 +2,7 @@
 
 import { useFormStatus } from "react-dom"
 
-export default function SubmitButton({ content }) {
+export default function SubmitButton({ content, className }) {
     const { pending } = useFormStatus();
-    return <button disabled={pending} type="submit">{pending ? "Submitting" : content}</button>
+    return <button disabled={pending} className={className} type="submit">{pending ? "Submitting" : content}</button>
 }
