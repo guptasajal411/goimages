@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema({
 // userSchema.methods.generateToken = async function () {
 //     const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 //     const alg = "HS256";
-//     const token = await new jose.SignJWT({ _id: this._id, email: this.email })
+//     const token = await new jose.SignJWT({ _id: this._id, email: this.email, name: this.name })
 //         .setProtectedHeader({ alg })
 //         .setExpirationTime("72h")
 //         .setSubject(process.env.AUTH_COOKIE_NAME)
