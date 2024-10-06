@@ -6,7 +6,6 @@ import Image from "next/image";
 import { libreBaskerville } from "../fonts/fonts";
 
 export default async function Home() {
-
     return <div className="p-4 bg-background h-[calc(100vh-90px)] max-h-[calc(100vh-90px)] pb-0 animate-fade-in-down">
         <UpdateState isAuthenticated={false} />
         <div className="flex sm:flex-row flex-col sm:items-center sm:mt-0 mt-32 sm:justify-center h-[calc(100%-50px)] max-w-[1500px] m-auto blurredBg relative">
