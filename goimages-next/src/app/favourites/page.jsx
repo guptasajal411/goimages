@@ -5,10 +5,10 @@ import ImageGridLoading from "@/components/homepage/components/ImageGridLoading"
 import Favourites from "./favourites";
 
 export default async function Page() {
-    return <>
+    return <div className="p-4 pt-0">
         <TopBar route="/favourites" />
         <Suspense fallback={<ImageGridLoading />}>
             <Favourites />
         </Suspense>
-    </>
+    </div>
 }

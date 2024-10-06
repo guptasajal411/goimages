@@ -1,5 +1,4 @@
 import "server-only";
-import { useAppSelector } from "@/store/hooks"
 import UpdateState from "@/components/homepage/components/UpdateState";
 import Link from "next/link";
 import Image from "next/image";
