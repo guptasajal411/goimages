@@ -15,12 +15,12 @@ export default async function Home() {
                 <div className="max-w-[75%] flex flex-col">
                     <p className="text-lg text-secondary text-center sm:text-start">Free, open-source, and private photo storage, powered by your own S3 bucket</p>
                     <div className="min-w-full flex">
-                        <Link className="min-w-full bg-lime-400 bg-opacity-10 hover:bg-opacity-15 transition-all ease-in-out duration-200 text-center text-primary mt-3 py-2 px-2 rounded-md border-lime-500/100 border flex justify-center items-center gap-2" href="/register">
+                        <Link className="min-w-full bg-lime-400 bg-opacity-10 hover:bg-opacity-15 transition-all ease-in-out duration-200 text-center text-primary mt-3 py-2 px-2 rounded-md border-lime-500/100 border flex justify-center items-center gap-2" href="/register" aria-label="Get Started">
                             <>Get started</>
-                            <Image className="opacity-70" src="/open.svg" width="16" height="16" />
+                            <Image className="opacity-70" src="/open.svg" width="16" height="16" alt="Get Started" />
                         </Link>
-                        <Link className="min-w-full sm:block hidden opacity-80 hover:opacity-100 transition-all ease-in-out duration-200 mt-3 py-2 px-2 ms-2" href="https://github.com/guptasajal411/goimages" target="_blank">
-                            <Image src="/github.svg" width="32" height="32" />
+                        <Link className="min-w-full sm:block hidden opacity-80 hover:opacity-100 transition-all ease-in-out duration-200 mt-3 py-2 px-2 ms-2" href="https://github.com/guptasajal411/goimages" target="_blank" aria-label="Go to GitHub repository">
+                            <Image alt="GoImages Hero" src="/github.svg" width="32" height="32" />
                         </Link>
                     </div>
                 </div>

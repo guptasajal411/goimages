@@ -24,8 +24,8 @@ export default function NavbarButton() {
         {userData.authenticated ? <form action={formAction}>
             <button type="submit">Logout</button>
         </form> : <div className="flex flex-row">
-            <Link href="/login" className="pe-3 text-secondary"><HoverText text={"Login"} /></Link>
-            <Link href="/register" className="text-secondary sm:block hidden"><HoverText text={"Register"} /></Link>
+            <Link href="/login" className="pe-3 text-secondary" aria-label="Login"><HoverText text={"Login"} /></Link>
+            <Link href="/register" className="text-secondary sm:block hidden" aria-label="Register"><HoverText text={"Register"} /></Link>
         </div>}
     </>
 }
