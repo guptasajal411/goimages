@@ -23,6 +23,7 @@ export default function UploadFiles() {
         const response = await _response.json();
         response?.success ? toast.success(response.message) : toast.error(response.message);
         setIsUploading(false);
+        setSelectedFiles([]);
         revalidatePathAction("/");
         return 0;
     }
