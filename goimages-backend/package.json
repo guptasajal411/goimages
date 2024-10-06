@@ -4,7 +4,8 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "concurrently \"nodemon index.js\" \"nodemon ./workers/photoWorker.js\""
+        "dev": "nodemon index.js",
+        "devDocker": "concurrently \"nodemon index.js\" \"nodemon ./workers/photoWorker.js\""
     },
     "author": "guptasajal411",
     "type": "module",

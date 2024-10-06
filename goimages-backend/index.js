@@ -5,12 +5,12 @@ import cors from "cors"
 import uploadRouter from "./routes/uploadRoutes.js"
 import morgan from "morgan";
 import chalk from "chalk";
-import redis from "./config/redisConn.js";
+// import redis from "./config/redisConn.js";
 import cookieParser from "cookie-parser";
 import dbConn from "./config/dbConn.js";
 
 dbConn();
-redis.hello();
+// redis.hello();
 
 const app = express();
 const corsOptions = {
