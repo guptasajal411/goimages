@@ -18,14 +18,14 @@ export default async function ImageGrid() {
     try {
         const secret = new TextEncoder().encode(process.env.JWT_SECRET);
         const { payload } = await jose.jwtVerify(cookie.value, secret, {});
-        const photos = await Photo.find({ user: payload?._id }).sort("-createTime").select("s3ObjectKey width height").exec()
+        const photos = await Photo.find({ user: payload?._id }).sort("-createTime").select("s3ObjectKey width height favourite").exec()
         for (const photo of photos) {
             const signedUrl = s3.getSignedUrl("getObject", {
                 Bucket: process.env.S3_BUCKET_NAME,
                 Key: photo?.s3ObjectKey,
                 Expires: 60 * 60
             });
-            renderPhotos.push({ src: signedUrl, _id: photo?._id, height: photo?.height, width: photo?.width })
+            renderPhotos.push({ src: signedUrl, _id: photo?._id, height: photo?.height, width: photo?.width, id: photo?._id.toString(), favourite: photo?.favourite })
         }
     } catch (e) {
         console.log(e);
@@ -33,7 +33,7 @@ export default async function ImageGrid() {
     }
     return <div className="w-[100%] max-w-[1536px] mx-auto pt-4 flex flex-wrap gap-4">
         {renderPhotos.length > 0
-            ? renderPhotos.map(x => <ThumbnailImage src={x?.src} key={x?._id} width={x?.width} height={x?.height} />)
+            ? renderPhotos.map(x => <ThumbnailImage src={x?.src} key={x?._id} width={x?.width} height={x?.height} id={x?.id} favourite={x?.favourite} key={x?.id} />)
             : <p className="text-tirtiary mx-auto text-center mt-32 animate-fade-in">Start by uploading your photos</p>}
     </div>
 }
