@@ -4,6 +4,7 @@ import * as jose from "jose"
 import Photo from "@/models/Photo";
 import AWS from "aws-sdk";
 import ThumbnailImage from "./ThumbnailImage";
+import { getUserPhotos } from "@/actions/dashboardActions";
 
 const s3 = new AWS.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -12,27 +13,17 @@ const s3 = new AWS.S3({
 });
 
 export default async function ImageGrid() {
-    const cookie = cookies().get(process.env.AUTH_COOKIE_NAME);
-    let renderPhotos = [];
-    try {
-        const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-        const { payload } = await jose.jwtVerify(cookie.value, secret, {});
-        const photos = await Photo.find({ user: payload?._id }).sort("-createTime").select("s3ObjectKey width height favourite").exec()
-        for (const photo of photos) {
-            const signedUrl = s3.getSignedUrl("getObject", {
-                Bucket: process.env.S3_BUCKET_NAME,
-                Key: photo?.s3ObjectKey,
-                Expires: 60 * 60
-            });
-            renderPhotos.push({ src: signedUrl, _id: photo?._id, height: photo?.height, width: photo?.width, id: photo?._id.toString(), favourite: photo?.favourite })
-        }
-    } catch (e) {
-        console.log(e);
-        return <p className="text">An error occoured</p>
-    }
-    return <div className="w-[100%] max-w-[1536px] mx-auto pt-4 flex flex-wrap gap-4">
-        {renderPhotos.length > 0
-            ? renderPhotos.map(x => <ThumbnailImage src={x?.src} key={x?._id} width={x?.width} height={x?.height} id={x?.id} favourite={x?.favourite} />)
-            : <p className="text-tirtiary mx-auto text-center mt-20 animate-fade-in">Start by uploading your photos</p>}
+    let renderPhotos = []
+    const response = await getUserPhotos(0, 10);
+    if (response.success) {
+        renderPhotos = response.data
+    } else return <div className="w-[100%] max-w-[1536px] mx-auto pt-4 flex flex-wrap gap-4"><p className="text-tirtiary mx-auto text-center mt-20 animate-fade-in">An error occoured</p></div>
+    return <div className="w-[100%] max-w-[1536px] mx-auto">
+        <div className="pt-4 flex flex-wrap gap-4">
+            {renderPhotos.length > 0
+                ? renderPhotos.map(x => <ThumbnailImage src={x?.src} key={x?._id} width={x?.width} height={x?.height} id={x?.id} favourite={x?.favourite} />)
+                : <p className="text-tirtiary mx-auto text-center mt-20 animate-fade-in">Start by uploading your photos</p>}
+        </div>
+        <p className="text-tirtiary mx-auto text-center mt-20 animate-fade-in">Loading...</p>
     </div>
 }

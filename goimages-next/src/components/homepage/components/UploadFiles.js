@@ -18,14 +18,18 @@ export default function UploadFiles() {
         try {
             const formData = new FormData();
             Array.from(selectedFiles).forEach(x => formData.append("files", x));
-            const _response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/upload`, {
-                method: "POST", body: formData, credentials: "include"
-            });
-            const response = await _response.json();
-            response?.success ? toast.success(response.message) : toast.error(response.message);
-            setIsUploading(false);
-            setSelectedFiles([]);
-            revalidatePathAction("/");
+            let time = 1
+            while (time < 50) {
+                const _response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/upload`, {
+                    method: "POST", body: formData, credentials: "include"
+                });
+                const response = await _response.json();
+                response?.success ? toast.success(response.message) : toast.error(response.message);
+                setIsUploading(false);
+                setSelectedFiles([]);
+                revalidatePathAction("/");
+                time = time + 1;
+            }
         } catch (e) {
             console.log(e);
             setIsUploading(false);
