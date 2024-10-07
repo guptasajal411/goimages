@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { getUserPhotos } from "@/actions/dashboardActions";
 
-export default function ImageGridClient({ renderPhotos, originalShowLoading }) {
+export default function ImageGridClient({ renderPhotos, originalShowLoading, favourites = false }) {
     const [images, setImages] = useState(renderPhotos);
     const [showLoading, setShowLoading] = useState(originalShowLoading);
     const [page, setPage] = useState(0);
@@ -15,7 +15,7 @@ export default function ImageGridClient({ renderPhotos, originalShowLoading }) {
 
     useEffect(() => {
         async function getPhotos() {
-            const response = await getUserPhotos(page + 1);
+            const response = await getUserPhotos(page + 1, undefined, favourites);
             if (response.success) {
                 setImages(images => [...images, ...response.data]);
                 setShowLoading(response?.showLoading);

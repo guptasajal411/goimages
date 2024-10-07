@@ -1,17 +1,7 @@
 import "server-only"
-import { cookies } from "next/headers"
-import * as jose from "jose"
-import Photo from "@/models/Photo";
-import AWS from "aws-sdk";
-import ThumbnailImage from "./ThumbnailImage";
+
 import { getUserPhotos } from "@/actions/dashboardActions";
 import ImageGridClient from "./ImageGridClient";
-
-const s3 = new AWS.S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION
-});
 
 export default async function ImageGrid() {
     let renderPhotos = [];
