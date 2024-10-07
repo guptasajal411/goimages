@@ -12,14 +12,15 @@ const s3 = new AWS.S3({
     region: process.env.AWS_REGION
 });
 
-export async function getUserPhotos(page, perPage) {
+export async function getUserPhotos(page, perPage, favourite = false) {
     const cookie = cookies().get(process.env.AUTH_COOKIE_NAME);
     const payload = jose.decodeJwt(cookie.value);
     let returnArray = [];
     let showLoading = false;
+    let filter = favourite ? { user: payload?._id, favourite: true } : { user: payload?._id }
     try {
-        const photos = await Photo.find({ user: payload?._id }, undefined, { limit: perPage, skip: perPage * page }).sort("-createTime").select("s3ObjectKey width height favourite").exec();
-        const totalPhotos = await Photo.countDocuments({ user: payload?._id }).exec();
+        const photos = await Photo.find(filter, undefined, { limit: perPage, skip: perPage * page }).sort("-createTime").select("s3ObjectKey width height favourite").exec();
+        const totalPhotos = await Photo.countDocuments(filter).exec();
         if (totalPhotos > perPage + (perPage * page)) showLoading = true
         for (const photo of photos) {
             const signedUrl = s3.getSignedUrl("getObject", {
