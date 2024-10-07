@@ -16,7 +16,7 @@ export default async function Page() {
             const redis = redisClient.getInstance();
             const secret = new TextEncoder().encode(process.env.JWT_SECRET);
             const { payload } = await jose.jwtVerify(cookie.value, secret, {});
-            const cachedUser = await redis.get(`user:${payload.email}`);
+            const cachedUser = await redis.get(`user:${payload._id}`);
             if (cachedUser) {
                 user = JSON.parse(cachedUser);
                 authenticated = true;
@@ -26,7 +26,7 @@ export default async function Page() {
                 if (foundUser) {
                     authenticated = true;
                     user = foundUser.toObject();
-                    await redis.set(`user:${payload.email}`, JSON.stringify(user), 'EX', 3600);
+                    await redis.set(`user:${payload._id}`, JSON.stringify(user), 'EX', 3600);
                 }
             }
         } catch (e) {
