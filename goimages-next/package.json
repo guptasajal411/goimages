@@ -13,6 +13,7 @@
         "@reduxjs/toolkit": "^2.2.7",
         "aws-sdk": "^2.1691.0",
         "bcryptjs": "^2.4.3",
+        "ioredis": "^5.4.1",
         "jose": "^5.9.2",
         "mongoose": "^8.6.3",
         "next": "^15.0.0-rc.0",

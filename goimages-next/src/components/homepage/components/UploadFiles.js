@@ -15,17 +15,22 @@ export default function UploadFiles() {
     async function handleUpload(e) {
         e.preventDefault();
         setIsUploading(true);
-        const formData = new FormData();
-        Array.from(selectedFiles).forEach(x => formData.append("files", x));
-        const _response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/upload`, {
-            method: "POST", body: formData, credentials: "include"
-        });
-        const response = await _response.json();
-        response?.success ? toast.success(response.message) : toast.error(response.message);
-        setIsUploading(false);
-        setSelectedFiles([]);
-        revalidatePathAction("/");
-        return 0;
+        try {
+            const formData = new FormData();
+            Array.from(selectedFiles).forEach(x => formData.append("files", x));
+            const _response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/upload`, {
+                method: "POST", body: formData, credentials: "include"
+            });
+            const response = await _response.json();
+            response?.success ? toast.success(response.message) : toast.error(response.message);
+            setIsUploading(false);
+            setSelectedFiles([]);
+            revalidatePathAction("/");
+        } catch (e) {
+            console.log(e);
+            setIsUploading(false);
+            toast.error("An error occoured")
+        }
     }
 
     return <form onSubmit={async e => await handleUpload(e)} className="flex">
