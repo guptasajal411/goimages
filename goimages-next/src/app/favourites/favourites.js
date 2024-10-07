@@ -14,7 +14,7 @@ const s3 = new AWS.S3({
 
 export default async function Favourites() {
     let renderPhotos = []
-    const response = await getUserPhotos(0, 10, true);
+    const response = await getUserPhotos(0, undefined, true);
     if (response.success) {
         renderPhotos = response.data
     } else return <div className="w-[100%] max-w-[1536px] mx-auto pt-4 flex flex-wrap gap-4"><p className="text-tirtiary mx-auto text-center mt-20 animate-fade-in">An error occoured</p></div>

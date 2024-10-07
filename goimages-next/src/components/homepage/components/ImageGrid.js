@@ -16,7 +16,7 @@ const s3 = new AWS.S3({
 export default async function ImageGrid() {
     let renderPhotos = [];
     let showLoading = false;
-    const response = await getUserPhotos(0, 10);
+    const response = await getUserPhotos(0);
     if (response.success) {
         renderPhotos = response.data;
         showLoading = response.showLoading
