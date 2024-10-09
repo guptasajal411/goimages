@@ -5,6 +5,7 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "nodemon index.js",
+        "start": "pm2 start node index.js",
         "devDocker": "concurrently \"nodemon index.js\" \"nodemon ./workers/photoWorker.js\""
     },
     "author": "guptasajal411",
