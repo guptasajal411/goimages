@@ -19,10 +19,11 @@ jobs:
     - name: Deploy GoImages Backend
       run: cd goimages-backend
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+        working-directory: ./goimages-backend
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+        uses: actions/setup-node@v4
     - run: npm ci
     - run: npm install -g pm2
     - run: |
