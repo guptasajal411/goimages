@@ -33,6 +33,8 @@ app.use(morgan(function (tokens, req, res) {
 }));
 app.use("/api/upload", cors(corsOptions), uploadRouter);
 
+app.get("/", (req, res) => { res.send("goimages server online") });
+
 app.listen(PORT, () => {
     console.log("goimages server started")
 })
