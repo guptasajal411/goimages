@@ -28,6 +28,7 @@ jobs:
 
       - name: Setup environment
         run: |
+          cd ./goimages-backend
           touch .env
           echo "${{ secrets.PROD_BACKEND_ENV_FILE }}" > .env
 
