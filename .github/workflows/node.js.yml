@@ -29,9 +29,9 @@ jobs:
       - name: Setup environment
         run: |
           touch .env
-          echo "${{ secrets.PROD_BACKEND_ENV_FILE }}"
+          echo "${{ secrets.PROD_BACKEND_ENV_FILE }}" > .env
 
       - name: Deploy Application
         run: |
           cd ./goimages-backend
-          npm start
+          sudo pm2 restart goimages-backend-service
