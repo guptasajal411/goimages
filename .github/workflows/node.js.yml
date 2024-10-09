@@ -26,6 +26,11 @@ jobs:
           cd ./goimages-backend
           npm ci
 
+      - name: Setup environment
+        run: |
+          touch .env
+          echo "${{ secrets.PROD_BACKEND_ENV_FILE }}"
+
       - name: Deploy Application
         run: |
           cd ./goimages-backend
