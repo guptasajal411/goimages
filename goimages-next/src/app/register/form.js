@@ -26,13 +26,13 @@ export default function RegisterForm() {
     }, [state])
     return <form className="text-md flex flex-col items-center justify-center w-full mt-8 px-4 sm:mb-0 mb-12" action={formAction}>
         <div className="w-full mt-3">
-            <input name="name" placeholder="Name" required type="text" className="mt-3 placeholder:text-tirtiary border-b-tirtiary border border-x-0 border-t-0 w-full text-secondary transition-all duration-1500 ease-in-out bg-background" autocomplete="off" />
+            <input name="name" placeholder="Name" required type="text" className="mt-3 placeholder:text-tirtiary border-b-tirtiary border border-x-0 border-t-0 w-full text-secondary transition-all duration-1500 ease-in-out bg-background" />
         </div>
         <div className="w-full mt-3">
-            <input name="email" placeholder="Email" required type="email" className="mt-3 placeholder:text-tirtiary border-b-tirtiary border border-x-0 border-t-0 w-full text-secondary transition-all duration-1500 ease-in-out bg-background" autocomplete="off" />
+            <input name="email" placeholder="Email" required type="email" className="mt-3 placeholder:text-tirtiary border-b-tirtiary border border-x-0 border-t-0 w-full text-secondary transition-all duration-1500 ease-in-out bg-background" />
         </div>
         <div className="w-full mt-3">
-            <input name="password" placeholder="Password" required type="password" className="mt-3 placeholder:text-tirtiary border-b-tirtiary border border-x-0 border-t-0 w-full text-secondary transition-all duration-1500 ease-in-out bg-background" autocomplete="off" />
+            <input name="password" placeholder="Password" required type="password" className="mt-3 placeholder:text-tirtiary border-b-tirtiary border border-x-0 border-t-0 w-full text-secondary transition-all duration-1500 ease-in-out bg-background" />
         </div>
         <div className="w-full mt-3">
             <Turnstile
