@@ -35,4 +35,4 @@ jobs:
       - name: Deploy Application
         run: |
           cd ./goimages-backend
-          sudo pm2 restart goimages-backend-service --update-env
+          pm2 restart goimages-backend-service --update-env
