@@ -1,9 +1,11 @@
 "use server";
 
+import "server-only"
 import dbConn from "@/config/dbConn";
 import User from "@/models/User";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
+import getUserIP from "@/utils/getUserIP";
 
 export async function RegisterAction(prevState, formData) {
     await dbConn();
@@ -11,6 +13,20 @@ export async function RegisterAction(prevState, formData) {
         let name = formData.get("name");
         let email = formData.get("email");
         let password = formData.get("password");
+        let cfTurnstileResponse = formData.get("cf-turnstile-response");
+        if (!cfTurnstileResponse) return { isError: true, message: "Cloudflare Error", actionResponse: true };
+        const ip = getUserIP();
+        if (!ip) return { isError: true, message: "IP Address not found", actionResponse: true };
+        let cfFormData = new FormData();
+        cfFormData.append("secret", process.env.CF_SECRET_KEY);
+        cfFormData.append("response", cfTurnstileResponse);
+        cfFormData.append("remoteip", ip);
+        const result = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+            body: cfFormData,
+            method: "POST"
+        });
+        const outcome = await result.json();
+        if (!outcome.success) return { isError: true, message: "Cloudflare verification error", actionResponse: true };
         const foundUser = await User.findOne({ email }).exec();
         if (foundUser) {
             cookies().delete(process.env.AUTH_COOKIE_NAME)
@@ -18,7 +34,7 @@ export async function RegisterAction(prevState, formData) {
         }
         const user = await User.create({ name, email, password });
         const token = await user.generateToken();
-        cookies().set(process.env.AUTH_COOKIE_NAME, token, { maxAge: 48 * 60 * 60, httpOnly: true, sameSite: process.env.NEXT_PUBLIC_NODE_ENV === "production" && "none", secure: process.env.NEXT_PUBLIC_NODE_ENV && true });
+        cookies().set(process.env.AUTH_COOKIE_NAME, token, { maxAge: 48 * 60 * 60, httpOnly: true, sameSite: process.env.NEXT_PUBLIC_NODE_ENV === "production" && "none", secure: process.env.NEXT_PUBLIC_NODE_ENV === "production" && true });
         return { isError: false, message: "User registered", actionResponse: true, redirect: "/", data: { email: user.email, name: user.name } }
     } catch (e) {
         console.log(e.message);
@@ -31,6 +47,20 @@ export async function LoginAction(prevState, formData) {
     try {
         let email = formData.get("email");
         let password = formData.get("password");
+        let cfTurnstileResponse = formData.get("cf-turnstile-response");
+        if (!cfTurnstileResponse) return { isError: true, message: "Cloudflare Error", actionResponse: true };
+        const ip = getUserIP();
+        if (!ip) return { isError: true, message: "IP Address not found", actionResponse: true };
+        let cfFormData = new FormData();
+        cfFormData.append("secret", process.env.CF_SECRET_KEY);
+        cfFormData.append("response", cfTurnstileResponse);
+        cfFormData.append("remoteip", ip);
+        const result = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+            body: cfFormData,
+            method: "POST"
+        });
+        const outcome = await result.json();
+        if (!outcome.success) return { isError: true, message: "Cloudflare verification error", actionResponse: true };
         const foundUser = await User.findOne({ email }).exec();
         if (!foundUser) {
             cookies().delete(process.env.AUTH_COOKIE_NAME)
@@ -42,7 +72,7 @@ export async function LoginAction(prevState, formData) {
             return { isError: true, message: "Wrong password", actionResponse: true }
         }
         const token = await foundUser.generateToken();
-        cookies().set(process.env.AUTH_COOKIE_NAME, token, { maxAge: 48 * 60 * 60, httpOnly: true, sameSite: process.env.NEXT_PUBLIC_NODE_ENV === "production" && "none", secure: process.env.NEXT_PUBLIC_NODE_ENV && true });
+        cookies().set(process.env.AUTH_COOKIE_NAME, token, { maxAge: 48 * 60 * 60, httpOnly: true, sameSite: process.env.NEXT_PUBLIC_NODE_ENV === "production" && "none", secure: process.env.NEXT_PUBLIC_NODE_ENV === "production" && true });
         return { isError: false, message: "Logged in successfully", actionResponse: true, redirect: "/", data: { email: foundUser.email, name: foundUser.name } }
     } catch (e) {
         console.log(e.message);

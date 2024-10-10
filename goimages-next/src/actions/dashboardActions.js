@@ -1,4 +1,5 @@
 "use server"
+
 import "server-only"
 import Photo from "@/models/Photo"
 import { revalidatePath } from "next/cache"
