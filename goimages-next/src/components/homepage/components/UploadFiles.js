@@ -3,7 +3,7 @@
 import { revalidatePathAction } from "@/actions/utilActions";
 import { useAppSelector } from "@/store/hooks";
 import { logoutUser, setUser } from "@/store/slices/userSlice";
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 
@@ -12,6 +12,7 @@ export default function UploadFiles() {
     const [isUploading, setIsUploading] = useState(false);
     const user = useAppSelector(state => state.userReducer)
     const dispatch = useDispatch();
+    const inputRef = useRef();
 
     function handleFileChange(e) {
         setSelectedFiles(e.target.files);
@@ -43,6 +44,7 @@ export default function UploadFiles() {
             response?.success ? toast.success(response.message) : toast.error(response.message);
             setIsUploading(false);
             setSelectedFiles([]);
+            inputRef.current.value = ""
             revalidatePathAction("/");
         } catch (e) {
             console.log(e);
@@ -56,7 +58,7 @@ export default function UploadFiles() {
             <label htmlFor="imageUploadInput" className="text-primary px-3 py-2 border border-lime-400 border-dashed cursor-pointer">
                 <p className="m-0 text-primary text-base">{selectedFiles.length > 0 ? <>{selectedFiles.length} file{selectedFiles.length > 1 && <>s</>} selected</> : <>Upload Files</>}</p>
             </label>
-            <input id="imageUploadInput" type="file" hidden multiple accept="image/*" onChange={e => handleFileChange(e)} />
+            <input id="imageUploadInput" ref={inputRef} type="file" hidden multiple accept="image/*" onChange={e => handleFileChange(e)} />
         </div>
         {selectedFiles.length > 0 && <button type="submit" className="border-2 border-black px-2 py-2 text-primary border-primary" disabled={isUploading}>{isUploading ? "Uploading..." : "Upload"}</button>}
     </form>
