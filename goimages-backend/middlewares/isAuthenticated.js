@@ -3,7 +3,8 @@ import User from "../models/User.js";
 
 export default async function isAuthenticated(req, res, next) {
     const cookie = req.cookies[process.env.AUTH_COOKIE_NAME];
-    if (!cookie) {
+    const header = req.header["authorization"]
+    if (!cookie && !header) {
         return res.status(401).json({ success: false, message: "unauthorised", devMessage: "cookie not found" })
     }
     try {
