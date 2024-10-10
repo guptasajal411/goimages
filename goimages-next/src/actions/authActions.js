@@ -3,9 +3,9 @@
 import "server-only"
 import dbConn from "@/config/dbConn";
 import User from "@/models/User";
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import getUserIP from "@/utils/getUserIP";
+import verifyCloudflareTurnstile from "@/utils/verifyCloudflareTurnstile";
 
 export async function RegisterAction(prevState, formData) {
     await dbConn();
@@ -15,18 +15,12 @@ export async function RegisterAction(prevState, formData) {
         let password = formData.get("password");
         let cfTurnstileResponse = formData.get("cf-turnstile-response");
         if (!cfTurnstileResponse) return { isError: true, message: "Cloudflare Error", actionResponse: true };
-        const ip = getUserIP();
-        if (!ip) return { isError: true, message: "IP Address not found", actionResponse: true };
-        let cfFormData = new FormData();
-        cfFormData.append("secret", process.env.CF_SECRET_KEY);
-        cfFormData.append("response", cfTurnstileResponse);
-        cfFormData.append("remoteip", ip);
-        const result = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-            body: cfFormData,
-            method: "POST"
-        });
-        const outcome = await result.json();
-        if (!outcome.success) return { isError: true, message: "Cloudflare verification error", actionResponse: true };
+        try {
+            await verifyCloudflareTurnstile(cfTurnstileResponse);
+        } catch (e) {
+            console.log(e);
+            return { isError: true, message: e, actionResponse: true };
+        }
         const foundUser = await User.findOne({ email }).exec();
         if (foundUser) {
             cookies().delete(process.env.AUTH_COOKIE_NAME)
@@ -49,18 +43,12 @@ export async function LoginAction(prevState, formData) {
         let password = formData.get("password");
         let cfTurnstileResponse = formData.get("cf-turnstile-response");
         if (!cfTurnstileResponse) return { isError: true, message: "Cloudflare Error", actionResponse: true };
-        const ip = getUserIP();
-        if (!ip) return { isError: true, message: "IP Address not found", actionResponse: true };
-        let cfFormData = new FormData();
-        cfFormData.append("secret", process.env.CF_SECRET_KEY);
-        cfFormData.append("response", cfTurnstileResponse);
-        cfFormData.append("remoteip", ip);
-        const result = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-            body: cfFormData,
-            method: "POST"
-        });
-        const outcome = await result.json();
-        if (!outcome.success) return { isError: true, message: "Cloudflare verification error", actionResponse: true };
+        try {
+            await verifyCloudflareTurnstile(cfTurnstileResponse);
+        } catch (e) {
+            console.log(e.message);
+            return { isError: true, message: e.message, actionResponse: true };
+        }
         const foundUser = await User.findOne({ email }).exec();
         if (!foundUser) {
             cookies().delete(process.env.AUTH_COOKIE_NAME)
