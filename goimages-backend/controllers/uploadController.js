@@ -36,8 +36,8 @@ export const uploadFiles = async (req, res) => {
             }
         } catch (e) {
             console.log(e);
-            return res.status(500).json({ success: false, message: `An error occoured (${processedFiles}/${totalFiles} ${processedFiles > 1 ? "files" : "file"} uploaded)` })
+            // return res.status(500).json({ success: false, message: `An error occoured (${processedFiles}/${totalFiles} ${processedFiles > 1 ? "files" : "file"} uploaded)` })
         }
     }
-    return res.status(200).json({ success: true, message: "Images backed up to the cloud" })
+    return res.status(200).json({ success: true, message: `${processedFiles}/${totalFiles} ${processedFiles > 1 ? "files" : "file"} backed up to the cloud` })
 }
