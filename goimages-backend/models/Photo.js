@@ -18,6 +18,15 @@ const photoSchema = new mongoose.Schema({
     createTime: { type: Date, default: Date.now }
 }, {
     timestamps: true,
+    validate: {
+        validator: async function () {
+            const photoCount = await mongoose.models.Photo.countDocuments({ user: this.user });
+            if (photoCount >= parseInt(process.env.USER_MAX_LIMIT)) {
+                return this.constructor.ValidationError(`You have reached the maximum limit of ${process.env.USER_MAX_LIMIT} photos.`);
+            }
+        },
+        message: `You have reached the maximum limit of ${process.env.USER_MAX_LIMIT} photos.`
+    }
 });
 
 export default mongoose?.models?.Photo || mongoose.model('Photo', photoSchema);
