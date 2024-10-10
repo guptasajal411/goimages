@@ -6,15 +6,16 @@ import { useAppDispatch } from "@/store/hooks";
 import { setUser } from "@/store/slices/userSlice";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Script from "next/script";
 import { useActionState, useEffect } from "react"
 import toast from "react-hot-toast";
+import Turnstile, { useTurnstile } from "react-turnstile";
 
 let initialState = { isError: false, message: "" }
 
 export default function LoginForm() {
     const router = useRouter();
     const dispatch = useAppDispatch();
+    const turnstile = useTurnstile();
     const [state, formAction] = useActionState(LoginAction, initialState);
     useEffect(() => {
         if (state.actionResponse) {
@@ -23,16 +24,18 @@ export default function LoginForm() {
             state.redirect && router.replace(state.redirect);
         }
     }, [state])
-    return <form className="text-md flex flex-col items-center justify-center w-full mt-8 px-4 sm:mb-0 mb-12" action={formAction}>
-        <Script src={"https://challenges.cloudflare.com/turnstile/v0/api.js"} id="cf-login" />
+    return <form className="text-md flex flex-col items-center justify-center w-full mt-8 px-4 sm:mb-0 mb-12" action={formAction} autocomplete>
         <div className="w-full mt-3">
-            <input name="email" placeholder="Email" required type="email" className="mt-3 placeholder:text-tirtiary border-b-tirtiary border border-x-0 border-t-0 w-full text-secondary transition-all duration-1500 ease-in-out bg-background" />
+            <input name="email" placeholder="Email" required type="email" className="mt-3 placeholder:text-tirtiary border-b-tirtiary border border-x-0 border-t-0 w-full text-secondary transition-all duration-1500 ease-in-out bg-background" autocomplete="off" />
         </div>
         <div className="w-full mt-3">
-            <input name="password" placeholder="Password" required type="password" className="mt-3 placeholder:text-tirtiary border-b-tirtiary border border-x-0 border-t-0 w-full text-secondary transition-all duration-1500 ease-in-out bg-background" />
+            <input name="password" placeholder="Password" required type="password" className="mt-3 placeholder:text-tirtiary border-b-tirtiary border border-x-0 border-t-0 w-full text-secondary transition-all duration-1500 ease-in-out bg-background" autocomplete="off" />
         </div>
         <div className="w-full mt-3">
-            <div className="cf-turnstile" data-sitekey={process.env.NEXT_PUBLIC_CF_SITE_KEY} data-callback="javascriptCallback" data-theme="dark" data-size="flexible"></div>
+            <Turnstile
+                sitekey={process.env.NEXT_PUBLIC_CF_SITE_KEY}
+                theme="dark"
+                size="flexible" />
         </div>
         <div className="flex sm:flex-row flex-col gap-4 items-center justify-center w-full mt-12">
             <Link href="/register" aria-label="Register" className="w-full text-center py-2 text-secondary border-tirtiary border rounded-md sm:order-1 order-2">Register</Link>
