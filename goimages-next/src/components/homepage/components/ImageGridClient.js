@@ -34,9 +34,11 @@ export default function ImageGridClient({ renderPhotos, originalShowLoading, fav
         }
     }, [inView]);
 
+    useEffect(() => { setImages([...renderPhotos]) }, [renderPhotos])
+
     useEffect(() => { selectedImages.length > 0 ? dispatch(showCreateNewAlbum()) : dispatch(hideCreateNewAlbum()) }, [selectedImages])
 
-    const addToSelected = (photoId) => { setSelectedImages(selectedImages => [...selectedImages, photoId]); dispatch(addToAlbum(photoId)) }
+    const addToSelected = (photoId, src, width, height) => { setSelectedImages(selectedImages => [...selectedImages, photoId]); dispatch(addToAlbum({ photoId, src, width, height })) }
     const removeFromSelected = (photoId) => { setSelectedImages(selectedImages => selectedImages.filter(id => id !== photoId)); dispatch(removeFromAlbum(photoId)) }
 
     return <>
