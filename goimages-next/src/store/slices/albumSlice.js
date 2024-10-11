@@ -9,10 +9,12 @@ const albumSlice = createSlice({
     initialState,
     reducers: {
         addToAlbum(state, action) {
-            state.selectedPhotosForAlbum = [...state.selectedPhotosForAlbum, action.payload];
+            if (!state.selectedPhotosForAlbum.some(item => item.photoId === action.payload.photoId)) {
+                state.selectedPhotosForAlbum = [...state.selectedPhotosForAlbum, action.payload];
+            }
         },
         removeFromAlbum(state, action) {
-            state.selectedPhotosForAlbum = state.selectedPhotosForAlbum.filter(id => id !== action.payload)
+            state.selectedPhotosForAlbum = state.selectedPhotosForAlbum.filter(id => id.photoId !== action.payload)
         }
     }
 });
