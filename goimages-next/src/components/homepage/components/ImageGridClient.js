@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { getUserPhotos } from "@/actions/dashboardActions";
 import { useAppDispatch } from "@/store/hooks";
 import { hideCreateNewAlbum, showCreateNewAlbum } from "@/store/slices/interfaceSlice";
+import { addToAlbum, removeFromAlbum } from "@/store/slices/albumSlice";
 
 export default function ImageGridClient({ renderPhotos, originalShowLoading, favourites = false }) {
     const [images, setImages] = useState(renderPhotos);
@@ -35,8 +36,8 @@ export default function ImageGridClient({ renderPhotos, originalShowLoading, fav
 
     useEffect(() => { selectedImages.length > 0 ? dispatch(showCreateNewAlbum()) : dispatch(hideCreateNewAlbum()) }, [selectedImages])
 
-    const addToSelected = (photoId) => { setSelectedImages(selectedImages => [...selectedImages, photoId]) }
-    const removeFromSelected = (photoId) => { setSelectedImages(selectedImages => selectedImages.filter(id => id !== photoId)) }
+    const addToSelected = (photoId) => { setSelectedImages(selectedImages => [...selectedImages, photoId]); dispatch(addToAlbum(photoId)) }
+    const removeFromSelected = (photoId) => { setSelectedImages(selectedImages => selectedImages.filter(id => id !== photoId)); dispatch(removeFromAlbum(photoId)) }
 
     return <>
         <div className="pt-4 flex flex-wrap gap-4">
