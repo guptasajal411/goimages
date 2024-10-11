@@ -13,13 +13,15 @@ export async function RegisterAction(prevState, formData) {
         let name = formData.get("name");
         let email = formData.get("email");
         let password = formData.get("password");
-        let cfTurnstileResponse = formData.get("cf-turnstile-response");
-        if (!cfTurnstileResponse) return { isError: true, message: "Cloudflare Error", actionResponse: true };
-        try {
-            await verifyCloudflareTurnstile(cfTurnstileResponse);
-        } catch (e) {
-            console.log(e);
-            return { isError: true, message: e, actionResponse: true };
+        if (process.env.NEXT_PUBLIC_NODE_ENV === "production") {
+            let cfTurnstileResponse = formData.get("cf-turnstile-response");
+            if (!cfTurnstileResponse) return { isError: true, message: "Cloudflare Error", actionResponse: true };
+            try {
+                await verifyCloudflareTurnstile(cfTurnstileResponse);
+            } catch (e) {
+                console.log(e);
+                return { isError: true, message: e, actionResponse: true };
+            }
         }
         const foundUser = await User.findOne({ email }).exec();
         if (foundUser) {
@@ -41,13 +43,15 @@ export async function LoginAction(prevState, formData) {
     try {
         let email = formData.get("email");
         let password = formData.get("password");
-        let cfTurnstileResponse = formData.get("cf-turnstile-response");
-        if (!cfTurnstileResponse) return { isError: true, message: "Cloudflare Error", actionResponse: true };
-        try {
-            await verifyCloudflareTurnstile(cfTurnstileResponse);
-        } catch (e) {
-            console.log(e.message);
-            return { isError: true, message: e.message, actionResponse: true };
+        if (process.env.NEXT_PUBLIC_NODE_ENV === "production") {
+            let cfTurnstileResponse = formData.get("cf-turnstile-response");
+            if (!cfTurnstileResponse) return { isError: true, message: "Cloudflare Error", actionResponse: true };
+            try {
+                await verifyCloudflareTurnstile(cfTurnstileResponse);
+            } catch (e) {
+                console.log(e.message);
+                return { isError: true, message: e.message, actionResponse: true };
+            }
         }
         const foundUser = await User.findOne({ email }).exec();
         if (!foundUser) {
