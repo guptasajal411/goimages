@@ -10,10 +10,34 @@
     opacity: 1;
 }
 
+.selectIcon {
+    opacity: 0;
+    top: 0;
+    left: 10px;
+    transition: all 0.2s ease-in-out
+}
+
+.selectIcon.isSelected {
+    opacity: 1;
+    top: 10px;
+    left: 10px;
+}
+
+.thumbnailContainer:hover .selectIcon {
+    top: 10px;
+    opacity: 1;
+}
+
 @media (max-width: 640px) {
     .favouriteIcon {
         opacity: 1;
         top: 10px;
         right: 10px;
+    }
+
+    .selectIcon {
+        opacity: 1;
+        top: 10px;
+        left: 10px;
     }
 }

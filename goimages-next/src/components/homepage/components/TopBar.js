@@ -4,9 +4,9 @@ import Link from "next/link"
 import UploadFiles from "./UploadFiles";
 
 export default async function TopBar({ route }) {
-    const routes = [{
-        route: "/", image: "/photo.svg", content: "Photos"
-    }, { route: "/favourites", image: "/star.svg", content: "Favourites" }];
+    const routes = [{ route: "/", image: "/photo.svg", content: "Photos" },
+    { route: "/favourites", image: "/star.svg", content: "Favourites" },
+    { route: "/albums", image: "/album.svg", content: "Albums" }];
     const activeStyle = "bg-lime-200 border-lime-500/100 border bg-opacity-30 hover:bg-opacity-40 text-primary";
     const inactiveStyle = "bg-lime-400 border-tirtiary border bg-opacity-10 hover:bg-opacity-15 text-primary";
     if (routes.some((r) => r.route === route)) {

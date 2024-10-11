@@ -11,6 +11,7 @@ export default function UploadFiles() {
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [isUploading, setIsUploading] = useState(false);
     const user = useAppSelector(state => state.userReducer)
+    const interfaceValue = useAppSelector(state => state.interfaceReducer)
     const dispatch = useDispatch();
     const inputRef = useRef();
 
@@ -53,13 +54,22 @@ export default function UploadFiles() {
         }
     }
 
-    return <form onSubmit={async e => await handleUpload(e)} className="flex">
-        <div className={`w-fit flex justify-center items-center ${selectedFiles.length > 0 && "me-2"}`}>
-            <label htmlFor="imageUploadInput" className="text-primary px-3 py-2 border border-lime-400 border-dashed cursor-pointer">
-                <p className="m-0 text-primary text-base">{selectedFiles.length > 0 ? <>{selectedFiles.length} file{selectedFiles.length > 1 && <>s</>} selected</> : <>Upload Files</>}</p>
-            </label>
-            <input id="imageUploadInput" ref={inputRef} type="file" hidden multiple accept="image/*" onChange={e => handleFileChange(e)} />
-        </div>
-        {selectedFiles.length > 0 && <button type="submit" className="border-2 border-black px-2 py-2 text-primary border-primary" disabled={isUploading}>{isUploading ? "Uploading..." : "Upload"}</button>}
-    </form>
+    return interfaceValue.showCreateNewAlbum
+        ? <form onSubmit={async e => await handleUpload(e)} className="flex">
+            <div className={`w-fit flex justify-center items-center`}>
+                <div className="bg-lime-400 bg-opacity-10 hover:bg-opacity-15 transition-all ease-in-out duration-200 text-center text-primary py-2 px-2 rounded-md border-lime-500/100 border flex justify-center items-center gap-2 text-base cursor-pointer select-none">
+                    Add to album
+                </div>
+            </div>
+            {selectedFiles.length > 0 && <button type="submit" className="border-2 border-black px-2 py-2 text-primary border-primary" disabled={isUploading}>{isUploading ? "Uploading..." : "Upload"}</button>}
+        </form>
+        : <form onSubmit={async e => await handleUpload(e)} className="flex">
+            <div className={`w-fit flex justify-center items-center ${selectedFiles.length > 0 && "me-2"}`}>
+                <label htmlFor="imageUploadInput" className="text-primary px-3 py-2 border border-lime-400 border-dashed cursor-pointer">
+                    <p className="m-0 text-primary text-base">{selectedFiles.length > 0 ? <>{selectedFiles.length} file{selectedFiles.length > 1 && <>s</>} selected</> : <>Upload Files</>}</p>
+                </label>
+                <input id="imageUploadInput" ref={inputRef} type="file" hidden multiple accept="image/*" onChange={e => handleFileChange(e)} />
+            </div>
+            {selectedFiles.length > 0 && <button type="submit" className="border-2 border-black px-2 py-2 text-primary border-primary" disabled={isUploading}>{isUploading ? "Uploading..." : "Upload"}</button>}
+        </form>
 }
