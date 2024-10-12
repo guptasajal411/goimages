@@ -2,6 +2,7 @@
 
 import { revalidatePathAction } from "@/actions/utilActions";
 import { useAppSelector } from "@/store/hooks";
+import { updateAlbumList } from "@/store/slices/albumSlice";
 import { logoutUser, setUser } from "@/store/slices/userSlice";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,7 +13,8 @@ import { useDispatch } from "react-redux";
 export default function UploadFiles() {
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [isUploading, setIsUploading] = useState(false);
-    const user = useAppSelector(state => state.userReducer)
+    const user = useAppSelector(state => state.userReducer);
+    const album = useAppSelector(state => state.albumReducer);
     const interfaceValue = useAppSelector(state => state.interfaceReducer)
     const dispatch = useDispatch();
     const inputRef = useRef();
@@ -32,8 +34,9 @@ export default function UploadFiles() {
         async function getUserData() {
             const _response = await fetch("/api/me", { credentials: "include", cache: "no-store" });
             const response = await _response.json();
-            if (response.success && response?.data?.authenticated) {
-                dispatch(setUser(response?.data))
+            if (response.success && response?.data?.userData?.authenticated) {
+                dispatch(setUser(response?.data?.userData))
+                dispatch(updateAlbumList(response?.data?.albumData))
             } else {
                 dispatch(logoutUser())
             }
@@ -72,15 +75,19 @@ export default function UploadFiles() {
             <dialog ref={dialogRef} className="w-[400px] max-w-[calc(100vw-30px)] rounded-md bg-background border border-lime-400">
                 <div className="px-2 py-3 w-full">
                     <div className="px-0 w-full relative">
-                        <p className="text-2xl text-center text-primary">Add to album</p>
+                        <p className="text-xl text-center text-primary">Add to album</p>
                         <Image src={"/back.svg"} width={36} height={36} onClick={() => toggleDialog()} className="absolute top-3 left-2 cursor-pointer opacity-70" />
                     </div>
                 </div>
                 <div className="w-full flex-col items-start justify-center pb-2">
                     <Link href={"/albums/new"} className="px-4 py-4 w-full flex justify-start items-center gap-3 cursor-pointer transition-all ease-in-out duration-200 hover:bg-lime-800 hover:bg-opacity-10">
                         <Image src={"/add.svg"} width={32} height={32} />
-                        <p className="text-md text-primary">Create new album</p>
+                        <p className="text-base text-primary">Create new album</p>
                     </Link>
+                    {album.userAlbumsList.map(x => <Link href={`/albums/${x?._id}`} className="px-4 py-4 w-full flex justify-start items-center gap-3 cursor-pointer transition-all ease-in-out duration-200 hover:bg-lime-800 hover:bg-opacity-10">
+                        <Image src={"/album.svg"} width={32} height={32} />
+                        <p className="text-base text-primary">{x?.title}</p>
+                    </Link>)}
                 </div>
             </dialog></>
         : <form onSubmit={async e => await handleUpload(e)} className="flex">

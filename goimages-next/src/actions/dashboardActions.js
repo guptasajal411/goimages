@@ -5,14 +5,8 @@ import Photo from "@/models/Photo"
 import { revalidatePath } from "next/cache"
 import { cookies } from "next/headers"
 import * as jose from "jose"
-import AWS from "aws-sdk"
 import dbConn from "@/config/dbConn"
-
-const s3 = new AWS.S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION
-});
+import getS3SignedUrl from "@/utils/getS3SignedUrl"
 
 export async function getUserPhotos(page, perPage = 30, favourite = false) {
     const cookie = cookies().get(process.env.AUTH_COOKIE_NAME);
@@ -26,11 +20,7 @@ export async function getUserPhotos(page, perPage = 30, favourite = false) {
         const totalPhotos = await Photo.countDocuments(filter).exec();
         if (totalPhotos > perPage + (perPage * page)) showLoading = true
         for (const photo of photos) {
-            const signedUrl = s3.getSignedUrl("getObject", {
-                Bucket: process.env.S3_BUCKET_NAME,
-                Key: photo?.s3ObjectKey,
-                Expires: 60 * 60
-            });
+            const signedUrl = getS3SignedUrl(photo?.s3ObjectKey)
             returnArray.push({ src: signedUrl, _id: photo?._id.toString(), height: photo?.height, width: photo?.width, id: photo?._id.toString(), favourite: photo?.favourite })
         }
     } catch (e) {

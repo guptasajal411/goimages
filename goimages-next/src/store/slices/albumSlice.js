@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    selectedPhotosForAlbum: []
+    selectedPhotosForAlbum: [],
+    userAlbumsList: []
 }
 
 const albumSlice = createSlice({
@@ -15,10 +16,13 @@ const albumSlice = createSlice({
         },
         removeFromAlbum(state, action) {
             state.selectedPhotosForAlbum = state.selectedPhotosForAlbum.filter(id => id.photoId !== action.payload)
+        },
+        updateAlbumList(state, action) {
+            state.userAlbumsList = [...action.payload]
         }
     }
 });
 
-export const { addToAlbum, removeFromAlbum } = albumSlice.actions;
+export const { addToAlbum, removeFromAlbum, updateAlbumList } = albumSlice.actions;
 
 export default albumSlice.reducer;

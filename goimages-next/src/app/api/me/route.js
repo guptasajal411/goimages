@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import * as jose from "jose"
 import dbConn from "@/config/dbConn";
+import Album from "@/models/Album";
 
 export async function GET() {
     let authenticated = false;
@@ -16,9 +17,14 @@ export async function GET() {
             await dbConn();
             const foundUser = await User.findOne({ email: payload.email }).select("name email createdAt").exec();
             if (foundUser) {
+                const albums = await Album.find({ user: foundUser._id }).select("title").exec();
                 authenticated = true;
                 user = foundUser.toObject();
-                return NextResponse.json({ success: true, data: { authenticated: true, name: user.name, email: user.email, token: await foundUser.generateToken() } });
+                return NextResponse.json({
+                    success: true, data: {
+                        userData: { authenticated: true, name: user.name, email: user.email, token: await foundUser.generateToken() }, albumData: albums
+                    }
+                });
             }
         } catch (e) {
             console.log(e);
