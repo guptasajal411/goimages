@@ -32,19 +32,8 @@ const albumSchema = new mongoose.Schema({
         ref: User.modelName
     }]
 }, {
-    timestamps: true,
-    validate: {
-        validator: async function () {
-            const albumCount = await mongoose.models.Album.countDocuments({ user: this.user });
-            if (albumCount >= parseInt(process.env.USER_MAX_ALBUM_LIMIT)) {
-                return this.constructor.ValidationError(`You have reached the maximum limit of ${process.env.USER_MAX_ALBUM_LIMIT} albums.`);
-            }
-        },
-        message: `You have reached the maximum limit of ${process.env.USER_MAX_ALBUM_LIMIT} albums.`
-    }
+    timestamps: true
 });
-
-albumSchema.index({ user: 1, title: 1 }, { unique: true });
 
 albumSchema.methods.addToAlbum = async function (photoId) {
     const photo = await Photo.findById(photoId);
