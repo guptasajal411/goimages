@@ -17,7 +17,8 @@ export async function GET() {
             await dbConn();
             const foundUser = await User.findOne({ email: payload.email }).select("name email createdAt").exec();
             if (foundUser) {
-                const albums = await Album.find({ user: foundUser._id }).select("title").exec();
+                const query = { $or: [{ user: foundUser._id }, { $and: [{ sharedWith: foundUser._id }, { accessibility: 'add-images' }, { privacy: 'shared' }] }] }
+                const albums = await Album.find(query).select("title").exec();
                 authenticated = true;
                 user = foundUser.toObject();
                 return NextResponse.json({

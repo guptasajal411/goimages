@@ -44,3 +44,18 @@ dialog[open] {
     opacity: 1;
     pointer-events: inherit;
 }
+
+.scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: var(--color-secondary);
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+    background: var(--color-green);
+    border-radius: 100vh;
+}

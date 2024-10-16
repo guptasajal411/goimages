@@ -1,22 +1,28 @@
 "use client"
 
+import { addPhotoToAlbum } from "@/actions/albumActions";
 import { revalidatePathAction } from "@/actions/utilActions";
-import { useAppSelector } from "@/store/hooks";
-import { updateAlbumList } from "@/store/slices/albumSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { updateAlbumList, resetSelectedPhotosForAlbum } from "@/store/slices/albumSlice";
 import { logoutUser, setUser } from "@/store/slices/userSlice";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react"
+import { useRouter } from "next/navigation";
+import { useState, useEffect, useRef, useActionState } from "react"
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
+
+const initialState = { success: false, message: "" }
 
 export default function UploadFiles() {
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [isUploading, setIsUploading] = useState(false);
+    const [state, addToAlbumAction] = useActionState(addPhotoToAlbum, initialState)
     const user = useAppSelector(state => state.userReducer);
     const album = useAppSelector(state => state.albumReducer);
+    const dispatch = useAppDispatch();
+    const router = useRouter();
     const interfaceValue = useAppSelector(state => state.interfaceReducer)
-    const dispatch = useDispatch();
     const inputRef = useRef();
     const dialogRef = useRef(null);
 
@@ -42,7 +48,19 @@ export default function UploadFiles() {
             }
         }
         getUserData();
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        if (state.actionResponse) {
+            if (state.success) {
+                toast.success(state.message);
+                router.push(state?.redirect);
+            } else {
+                toast.error(state.message);
+            }
+            dispatch(resetSelectedPhotosForAlbum())
+        }
+    }, [state])
 
     async function handleUpload(e) {
         e.preventDefault();
@@ -84,16 +102,20 @@ export default function UploadFiles() {
                         <Image src={"/add.svg"} width={32} height={32} />
                         <p className="text-base text-primary">Create new album</p>
                     </Link>
-                    {album.userAlbumsList.map(x => <Link href={`/albums/${x?._id}`} className="px-4 py-4 w-full flex justify-start items-center gap-3 cursor-pointer transition-all ease-in-out duration-200 hover:bg-lime-800 hover:bg-opacity-10">
-                        <Image src={"/album.svg"} width={32} height={32} />
-                        <p className="text-base text-primary">{x?.title}</p>
-                    </Link>)}
+                    {album.userAlbumsList.map(x => <form action={addToAlbumAction}>
+                        <input hidden type="text" name="photos" value={JSON.stringify(album?.selectedPhotosForAlbum)} />
+                        <input hidden type="text" name="albumid" value={x?._id} />
+                        <button type="submit" className="px-4 py-4 w-full flex justify-start items-center gap-3 cursor-pointer transition-all ease-in-out duration-200 hover:bg-lime-800 hover:bg-opacity-10">
+                            <Image src={"/album.svg"} width={32} height={32} />
+                            <p className="text-base text-primary">{x?.title}</p>
+                        </button>
+                    </form>)}
                 </div>
             </dialog></>
         : <form onSubmit={async e => await handleUpload(e)} className="flex">
             <div className={`w-fit flex justify-center items-center ${selectedFiles.length > 0 && "me-2"}`}>
                 <label htmlFor="imageUploadInput" className="text-primary px-3 py-2 border border-lime-400 border-dashed cursor-pointer">
-                    <p className="m-0 text-primary text-base">{selectedFiles.length > 0 ? <>{selectedFiles.length} file{selectedFiles.length > 1 && <>s</>} selected</> : <>Upload Files</>}</p>
+                    <p className="truncate m-0 text-primary text-base">{selectedFiles.length > 0 ? <>{selectedFiles.length} file{selectedFiles.length > 1 && <>s</>} selected</> : <>Upload Files</>}</p>
                 </label>
                 <input id="imageUploadInput" ref={inputRef} type="file" hidden multiple accept="image/*" onChange={e => handleFileChange(e)} />
             </div>

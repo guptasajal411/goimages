@@ -17,12 +17,15 @@ const albumSlice = createSlice({
         removeFromAlbum(state, action) {
             state.selectedPhotosForAlbum = state.selectedPhotosForAlbum.filter(id => id.photoId !== action.payload)
         },
+        resetSelectedPhotosForAlbum(state) {
+            state.selectedPhotosForAlbum = [];
+        },
         updateAlbumList(state, action) {
             state.userAlbumsList = [...action.payload]
         }
     }
 });
 
-export const { addToAlbum, removeFromAlbum, updateAlbumList } = albumSlice.actions;
+export const { addToAlbum, removeFromAlbum, updateAlbumList, resetSelectedPhotosForAlbum } = albumSlice.actions;
 
 export default albumSlice.reducer;

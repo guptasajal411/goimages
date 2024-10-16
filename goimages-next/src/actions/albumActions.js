@@ -4,7 +4,7 @@ import "server-only";
 import { cookies } from "next/headers";
 import * as jose from "jose"
 import Album from "@/models/Album";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import ClientError from "@/lib/ClientErrorClass";
 import dbConn from "@/config/dbConn";
 import User from "@/models/User";
@@ -16,8 +16,8 @@ export async function createAlbumAction(prevState, formData) {
         const cookie = cookies().get(process.env.AUTH_COOKIE_NAME);
         const { _id: userId } = jose.decodeJwt(cookie.value);
         const title = formData.get("title");
-        const privacy = formData.get("privacy");
-        const accessibility = formData.get("accessibility");
+        const privacy = formData.get("privacy") ?? undefined;
+        const accessibility = formData.get("accessibility") ?? undefined;
         const photos = JSON.parse(formData.get("photos") || "[]");
         const emails = formData.get("emails");
         if (!photos.length) {
@@ -41,7 +41,7 @@ export async function createAlbumAction(prevState, formData) {
             user: userId,
             photos: photoIds,
             privacy,
-            accessibility,
+            accessibility: privacy === "private" ? "add-images" : accessibility,
             sharedWith: privacy === "shared" ? sharedWith : undefined,
         });
         await album.save();
@@ -89,4 +89,36 @@ export async function getUserAlbumById(id) {
         photoArray.push({ ...foundPhoto.toObject(), src: signedUrl, s3ObjectKey: undefined });
     }
     return { success: true, data: { ...returnAlbum.toObject(), photoArray }, actionResponse: true }
+}
+
+export async function addPhotoToAlbum(prevState, formData) {
+    const cookie = cookies().get(process.env.AUTH_COOKIE_NAME);
+    const payload = jose.decodeJwt(cookie.value);
+    const albumid = formData.get("albumid")
+    const photos = formData.get("photos")
+    if (!albumid || !photos) return { success: false, message: "Incorrect input", actionResponse: true }
+    try {
+        await dbConn();
+        const foundUser = await User.findOne({ _id: payload?._id }).select("_id").exec();
+        if (!foundUser) return { success: false, message: "User not found", actionResponse: true }
+        const query = { $or: [{ user: foundUser._id }, { $and: [{ sharedWith: foundUser._id }, { accessibility: 'add-images' }, { privacy: 'shared' }] }] }
+        const album = await Album.find(query).select("-sharedWith").exec();
+        if (!album) return { success: false, message: "No permission", actionResponse: true }
+        let returnAlbum = album.filter(x => x?._id.toString() === albumid)[0]
+        if (!returnAlbum) return { success: false, message: "No permission", actionResponse: true }
+        if (!returnAlbum.photos.length > 0) return { success: false, message: "No photos found", actionResponse: true }
+        let jsonPhotos = JSON.parse(photos);
+        let totalPhotos = jsonPhotos.length, processedPhotos = 0;
+        for (const photo of jsonPhotos) {
+            if (mongoose.isValidObjectId(photo?.photoId) && !returnAlbum.photos.includes(Types.ObjectId.createFromHexString(photo?.photoId))) {
+                returnAlbum.photos.push(Types.ObjectId.createFromHexString(photo?.photoId));
+                processedPhotos++;
+            }
+        }
+        await returnAlbum.save();
+        return { success: true, message: `${processedPhotos}/${totalPhotos} photo${totalPhotos > 1 ? "s" : ""} were added to the album`, actionResponse: true, redirect: `/albums/${returnAlbum._id}` }
+    } catch (e) {
+        console.log(e)
+        return { success: false, message: "An error occoured", actionResponse: true }
+    }
 }
