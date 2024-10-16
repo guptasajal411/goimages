@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import * as jose from "jose";
 
 const shouldntBeAccessibleIfLoggedIn = ["/login", "/register"]
-const protectedRoutes = ["/dashboard", "/favourites"]
+const protectedRoutes = ["/dashboard", "/favourites", "/albums"]
 
 export default async function middleware(request) {
     const path = request.nextUrl.pathname;
@@ -21,5 +21,5 @@ export default async function middleware(request) {
 }
 
 export const config = {
-    matcher: ["/login", "/register", "/favourites"]
+    matcher: ["/login", "/register", "/favourites", "/albums/:path*"]
 }

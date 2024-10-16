@@ -85,8 +85,10 @@ export async function getUserAlbumById(id) {
     let photoArray = [];
     for (const photo of returnAlbum.photos) {
         const foundPhoto = await Photo.findOne({ _id: photo }).sort("-createTime").select("s3ObjectKey width height").exec();
-        const signedUrl = getS3SignedUrl(foundPhoto.s3ObjectKey)
-        photoArray.push({ ...foundPhoto.toObject(), src: signedUrl, s3ObjectKey: undefined });
+        if (foundPhoto) {
+            const signedUrl = getS3SignedUrl(foundPhoto.s3ObjectKey)
+            photoArray.push({ ...foundPhoto.toObject(), src: signedUrl, s3ObjectKey: undefined });
+        }
     }
     return { success: true, data: { ...returnAlbum.toObject(), photoArray }, actionResponse: true }
 }
